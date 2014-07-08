@@ -21,7 +21,15 @@ func NewClient(e string, a identity.AuthResults, o identity.AuthOptions) *Client
 }
 
 func (c *Client) GetListURL() string {
+	return fmt.Sprintf("%s/v1/images", c.endpoint)
+}
+
+func (c *Client) GetListDetailURL() string {
 	return fmt.Sprintf("%s/v1/images/detail", c.endpoint)
+}
+
+func (c *Client) GetDetailURL(id string) string {
+	return fmt.Sprintf("%s/v1/images/%s", c.endpoint, id)
 }
 
 func (c *Client) GetHeaders() (map[string]string, error) {
