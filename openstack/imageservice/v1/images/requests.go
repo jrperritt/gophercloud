@@ -11,6 +11,10 @@ import (
 type GetResult *http.Response
 type UpdateResult *http.Response
 
+func Add(c *imageservice.Client, opts AddOpts) {
+
+}
+
 func List(c *imageservice.Client, opts ListOpts) ([]Image, error) {
 	var i []Image
 	url := ""
@@ -65,12 +69,12 @@ func Update(c *imageservice.Client, opts UpdateOpts) (UpdateResult, error) {
 	fmt.Println(url)
 	fmt.Println(opts.Body)
 	if opts.Body != nil {
-		resp, err = perigee.Request("POST", url, perigee.Options{
+		resp, err = perigee.Request("PUT", url, perigee.Options{
 			MoreHeaders: h,
 			ReqBody:     opts.Body,
 		})
 	} else {
-		resp, err = perigee.Request("POST", url, perigee.Options{
+		resp, err = perigee.Request("PUT", url, perigee.Options{
 			MoreHeaders: h,
 		})
 	}
