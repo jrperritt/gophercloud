@@ -1,6 +1,7 @@
 package images
 
 import (
+	"fmt"
 	"github.com/racker/perigee"
 	imageservice "github.com/rackspace/gophercloud/openstack/imageservice/v1"
 	"github.com/rackspace/gophercloud/openstack/utils"
@@ -8,6 +9,7 @@ import (
 )
 
 type GetResult *http.Response
+type UpdateResult *http.Response
 
 func List(c *imageservice.Client, opts ListOpts) ([]Image, error) {
 	var i []Image
@@ -45,5 +47,32 @@ func Get(c *imageservice.Client, opts GetOpts) (GetResult, error) {
 	resp, err := perigee.Request("GET", url, perigee.Options{
 		MoreHeaders: h,
 	})
+	return &resp.HttpResponse, err
+}
+
+func Update(c *imageservice.Client, opts UpdateOpts) (UpdateResult, error) {
+	var resp *perigee.Response
+	h, err := c.GetHeaders()
+	if err != nil {
+		return nil, err
+	}
+
+	for k, v := range opts.Metadata {
+		h["x-image-meta-property-"+k] = v
+	}
+
+	url := c.GetUpdateURL(opts.Id)
+	fmt.Println(url)
+	fmt.Println(opts.Body)
+	if opts.Body != nil {
+		resp, err = perigee.Request("POST", url, perigee.Options{
+			MoreHeaders: h,
+			ReqBody:     opts.Body,
+		})
+	} else {
+		resp, err = perigee.Request("POST", url, perigee.Options{
+			MoreHeaders: h,
+		})
+	}
 	return &resp.HttpResponse, err
 }

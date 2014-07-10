@@ -1,6 +1,7 @@
 package images
 
 import (
+	"io"
 	"io/ioutil"
 	"strings"
 )
@@ -23,7 +24,6 @@ type Image struct {
 	Min_disk         int
 	Protected        bool
 	Min_ram          int
-	Location         string
 }
 
 type ListOpts struct {
@@ -33,6 +33,12 @@ type ListOpts struct {
 
 type GetOpts struct {
 	Id string
+}
+
+type UpdateOpts struct {
+	Body     io.Reader
+	Id       string
+	Metadata map[string]string
 }
 
 func ExtractContent(gr GetResult) ([]byte, error) {

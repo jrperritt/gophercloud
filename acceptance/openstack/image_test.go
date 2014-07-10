@@ -51,12 +51,16 @@ func getClient() (*imageservice.Client, error) {
 	}
 
 	client := imageservice.NewClient(rep, r, ao)
-	fmt.Printf("%s\n", rep)
+	//fmt.Printf("%s\n", rep)
 	return client, nil
 
 }
 
 func TestImages(t *testing.T) {
+	metadata := map[string]string{
+		"gopher": "cloud",
+	}
+
 	client, err := getClient()
 	if err != nil {
 		t.Error(err)
@@ -71,4 +75,23 @@ func TestImages(t *testing.T) {
 		return
 	}
 	fmt.Printf("%+v\n", li)
+
+	gi, err := images.Get(client, images.GetOpts{
+		Id: li[0].Id,
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	fmt.Printf("%+v\n", gi)
+
+	ui, err := images.Update(client, images.UpdateOpts{
+		Id:       li[0].Id,
+		Metadata: metadata,
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	fmt.Printf("%+v\n", ui)
 }

@@ -32,6 +32,10 @@ func (c *Client) GetDetailURL(id string) string {
 	return fmt.Sprintf("%s/v1/images/%s", c.endpoint, id)
 }
 
+func (c *Client) GetUpdateURL(id string) string {
+	return fmt.Sprintf("%s/v1/images/%s", c.endpoint, id)
+}
+
 func (c *Client) GetHeaders() (map[string]string, error) {
 	t, err := c.getAuthToken()
 	if err != nil {
