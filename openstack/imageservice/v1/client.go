@@ -20,6 +20,10 @@ func NewClient(e string, a identity.AuthResults, o identity.AuthOptions) *Client
 	}
 }
 
+func (c *Client) GetAddURL() string {
+	return fmt.Sprintf("%s/v1/images", c.endpoint)
+}
+
 func (c *Client) GetListURL() string {
 	return fmt.Sprintf("%s/v1/images", c.endpoint)
 }

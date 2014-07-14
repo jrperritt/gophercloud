@@ -69,6 +69,7 @@ func TestImages(t *testing.T) {
 
 	li, err := images.List(client, images.ListOpts{
 		Params: map[string]string{},
+		Full:   true,
 	})
 	if err != nil {
 		t.Error(err)
@@ -76,22 +77,46 @@ func TestImages(t *testing.T) {
 	}
 	fmt.Printf("%+v\n", li)
 
-	gi, err := images.Get(client, images.GetOpts{
+	ai, err := images.Add(client, images.AddOpts{})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	fmt.Printf("%+v\n", ai)
+
+	li, err = images.List(client, images.ListOpts{
+		Params: map[string]string{},
+		Full:   false,
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	fmt.Printf("%+v\n", li)
+
+	ui, err := images.Update(client, images.UpdateOpts{
+		Id:       li[0].Id,
+		Metadata: metadata,
+	})
+	fmt.Printf("\n%+v\n", ui)
+
+	gr, err := images.Get(client, images.GetOpts{
 		Id: li[0].Id,
 	})
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	fmt.Printf("%+v\n", gi)
+	fmt.Printf("%+v\n", gr)
+	/*
+		em := images.ExtractMetadata(gr)
+		fmt.Printf("\n%+v\n", em)
 
-	ui, err := images.Update(client, images.UpdateOpts{
-		Id:       li[0].Id,
-		Metadata: metadata,
-	})
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	fmt.Printf("%+v\n", ui)
+		ec, err := images.ExtractContent(gr)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		fmt.Printf("\n%+v\n", ec[0:300])
+	*/
 }

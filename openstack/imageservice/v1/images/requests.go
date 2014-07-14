@@ -1,18 +1,37 @@
 package images
 
 import (
-	"fmt"
+	//"fmt"
 	"github.com/racker/perigee"
 	imageservice "github.com/rackspace/gophercloud/openstack/imageservice/v1"
 	"github.com/rackspace/gophercloud/openstack/utils"
 	"net/http"
 )
 
+type AddResult *http.Response
 type GetResult *http.Response
 type UpdateResult *http.Response
 
-func Add(c *imageservice.Client, opts AddOpts) {
+func Add(c *imageservice.Client, opts AddOpts) (Image, error) {
+	var i Image
+	h, err := c.GetHeaders()
+	if err != nil {
+		return i, err
+	}
 
+	for k, v := range opts.Metadata {
+		h["x-image-meta-property-"+k] = v
+	}
+
+	url := c.GetAddURL()
+	_, err = perigee.Request("POST", url, perigee.Options{
+		MoreHeaders: h,
+		ReqBody:     opts.Content,
+		Results: &struct {
+			Image *Image `json:"image"`
+		}{&i},
+	})
+	return i, err
 }
 
 func List(c *imageservice.Client, opts ListOpts) ([]Image, error) {
@@ -66,12 +85,10 @@ func Update(c *imageservice.Client, opts UpdateOpts) (UpdateResult, error) {
 	}
 
 	url := c.GetUpdateURL(opts.Id)
-	fmt.Println(url)
-	fmt.Println(opts.Body)
-	if opts.Body != nil {
+	if opts.Content != nil {
 		resp, err = perigee.Request("PUT", url, perigee.Options{
 			MoreHeaders: h,
-			ReqBody:     opts.Body,
+			ReqBody:     opts.Content,
 		})
 	} else {
 		resp, err = perigee.Request("PUT", url, perigee.Options{

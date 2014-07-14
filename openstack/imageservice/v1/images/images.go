@@ -26,6 +26,11 @@ type Image struct {
 	Min_ram          int
 }
 
+type AddOpts struct {
+	Content  io.Reader
+	Metadata map[string]string
+}
+
 type ListOpts struct {
 	Full   bool
 	Params map[string]string
@@ -36,7 +41,7 @@ type GetOpts struct {
 }
 
 type UpdateOpts struct {
-	Body     io.Reader
+	Content  io.Reader
 	Id       string
 	Metadata map[string]string
 }
