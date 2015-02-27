@@ -184,8 +184,9 @@ func ExtractServers(page pagination.Page) ([]Server, error) {
 	}
 
 	config := &mapstructure.DecoderConfig{
-		DecodeHook: toMapFromString,
-		Result:     &response,
+		DecodeHook:       toMapFromString,
+		Result:           &response,
+		WeaklyTypedInput: true,
 	}
 	decoder, err := mapstructure.NewDecoder(config)
 	if err != nil {
